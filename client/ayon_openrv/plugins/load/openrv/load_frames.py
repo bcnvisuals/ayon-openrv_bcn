@@ -105,8 +105,40 @@ class FramesLoader(load.LoaderPlugin):
             self.log.debug(f"Extension {ext} not in IMAGE_EXTENSIONS")
             return
 
-        # Check version attributes first as they should have the correct frame range
+        # Print detailed version info
+        print("\nVersion details:")
+        print(f"  Version ID: {version_entity['id']}")
+        print(f"  Version data: {version_entity}")
+        print(f"  Version attributes: {version_entity['attrib']}")
+        print(f"  frameStart: {version_entity['attrib'].get('frameStart')}")
+        print(f"  frameEnd: {version_entity['attrib'].get('frameEnd')}")
+
+        # Print detailed representation info
+        print("\nRepresentation details:")
+        print(f"  Representation ID: {repre_entity['id']}")
+        print(f"  Representation attributes: {repre_entity['attrib']}")
+        print(f"  frameStart: {repre_entity['attrib'].get('frameStart')}")
+        print(f"  frameEnd: {repre_entity['attrib'].get('frameEnd')}")
         
+        # Print files info
+        if "files" in repre_entity:
+            files = repre_entity["files"]
+            print("\nFiles:")
+            if files:
+                print(f"  First file: {files[0]}")
+                if len(files) > 1:
+                    print(f"  Total files: {len(files)}")
+                    paths = [f["path"] for f in files]
+                    collections, remainder = clique.assemble(paths)
+                    if collections:
+                        frames = list(collections[0].indexes)
+                        print(f"  Sequence frames from files: {frames[0]}-{frames[-1]}")
+                        print(f"  Total frames: {len(frames)}")
+                    if remainder:
+                        print(f"  Unmatched files: {remainder}")
+            else:
+                print("  No files found")
+                    
         version_attribs = version_entity["attrib"]
         frame_start = version_attribs.get("frameStart")
         frame_end = version_attribs.get("frameEnd")
